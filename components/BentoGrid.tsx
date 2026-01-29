@@ -12,7 +12,7 @@ interface BentoCardProps {
     children: React.ReactNode;
     className?: string;
     title?: string;
-    icon?: React.ElementType;
+    icon?: React.ComponentType<any>;
     delay?: number;
 }
 
