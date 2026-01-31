@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 
-export type AppId = 'finder' | 'terminal' | 'browser' | 'settings' | 'trash';
+export type AppId = 'finder' | 'terminal' | 'browser' | 'settings' | 'trash' | 'mirror' | 'weather' | 'notes';
+
+// ... (keep interface definitions)
+
+
 
 export interface WindowState {
   id: AppId;
@@ -34,6 +38,8 @@ interface OSState {
   minimizeWindow: (id: AppId) => void;
   focusWindow: (id: AppId) => void;
   setTheme: (theme: Partial<OSTheme>) => void;
+  resizeWindow: (id: AppId, size: { width: number; height: number }) => void;
+  moveWindow: (id: AppId, position: { x: number; y: number }) => void;
 }
 
 const INITIAL_WINDOWS: Record<AppId, WindowState> = {
@@ -43,39 +49,39 @@ const INITIAL_WINDOWS: Record<AppId, WindowState> = {
     isOpen: false,
     isMinimized: false,
     isMaximized: false,
-    position: { x: 50, y: 50 },
-    size: { width: 600, height: 400 },
+    position: { x: 100, y: 100 },
+    size: { width: 800, height: 500 },
     zIndex: 1,
   },
   terminal: {
     id: 'terminal',
-    title: 'Terminal - zsh',
-    isOpen: true,
-    isMinimized: false,
-    isMaximized: false,
-    position: { x: 600, y: 80 },
-    size: { width: 700, height: 500 },
-    zIndex: 2,
-  },
-  browser: {
-    id: 'browser',
-    title: 'Antigravity Code Browser',
+    title: 'Terminal',
     isOpen: false,
     isMinimized: false,
     isMaximized: false,
     position: { x: 150, y: 150 },
-    size: { width: 900, height: 600 },
-    zIndex: 1,
+    size: { width: 600, height: 400 },
+    zIndex: 2,
   },
-  settings: {
-    id: 'settings',
-    title: 'System Preferences',
+  browser: {
+    id: 'browser',
+    title: 'Browser',
     isOpen: false,
     isMinimized: false,
     isMaximized: false,
-    position: { x: 400, y: 300 },
-    size: { width: 450, height: 350 },
-    zIndex: 1,
+    position: { x: 200, y: 100 },
+    size: { width: 900, height: 600 },
+    zIndex: 3,
+  },
+  settings: {
+    id: 'settings',
+    title: 'Settings',
+    isOpen: false,
+    isMinimized: false,
+    isMaximized: false,
+    position: { x: 300, y: 200 },
+    size: { width: 400, height: 500 },
+    zIndex: 4,
   },
   trash: {
     id: 'trash',
@@ -83,10 +89,40 @@ const INITIAL_WINDOWS: Record<AppId, WindowState> = {
     isOpen: false,
     isMinimized: false,
     isMaximized: false,
-    position: { x: 100, y: 400 },
-    size: { width: 300, height: 200 },
-    zIndex: 1,
+    position: { x: 400, y: 300 },
+    size: { width: 400, height: 300 },
+    zIndex: 5,
   },
+  mirror: {
+    id: 'mirror',
+    title: 'Mirror',
+    isOpen: false,
+    isMinimized: false,
+    isMaximized: false,
+    position: { x: 450, y: 150 },
+    size: { width: 400, height: 500 },
+    zIndex: 6,
+  },
+  weather: {
+    id: 'weather',
+    title: 'Atmosphere',
+    isOpen: false,
+    isMinimized: false,
+    isMaximized: false,
+    position: { x: 100, y: 100 },
+    size: { width: 350, height: 400 },
+    zIndex: 7,
+  },
+  notes: {
+    id: 'notes',
+    title: 'Notes',
+    isOpen: false,
+    isMinimized: false,
+    isMaximized: false,
+    position: { x: 200, y: 150 },
+    size: { width: 700, height: 500 },
+    zIndex: 8,
+  }
 };
 
 export const useOSStore = create<OSState>((set, get) => ({
@@ -146,4 +182,19 @@ export const useOSStore = create<OSState>((set, get) => ({
         },
       };
     }),
+  resizeWindow: (id: AppId, size: { width: number; height: number }) =>
+    set((state) => ({
+      windows: {
+        ...state.windows,
+        [id]: { ...state.windows[id], size },
+      },
+    })),
+
+  moveWindow: (id: AppId, position: { x: number; y: number }) =>
+    set((state) => ({
+      windows: {
+        ...state.windows,
+        [id]: { ...state.windows[id], position },
+      },
+    })),
 }));

@@ -3,24 +3,27 @@
 import { motion } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { ArrowRight, Maximize2, Minimize2 } from "lucide-react";
+import { ReactNode, ElementType } from 'react';
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
 interface BentoCardProps {
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
     title?: string;
-    icon?: React.ComponentType<any>;
+    icon?: any;
     delay?: number;
+    disableAnimation?: boolean;
 }
 
-export function BentoCard({ children, className, title, icon: Icon, delay = 0 }: BentoCardProps) {
+export function BentoCard({ children, className, title, icon: Icon, delay = 0, disableAnimation }: BentoCardProps) {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={disableAnimation ? undefined : { opacity: 0, y: 20 }}
+            animate={disableAnimation ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: delay }}
             className={cn(
                 "bento-card group relative flex flex-col overflow-hidden rounded-3xl bg-card border border-border p-6 backdrop-blur-xl transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_20px_rgba(99,102,241,0.1)]",
@@ -29,9 +32,11 @@ export function BentoCard({ children, className, title, icon: Icon, delay = 0 }:
         >
             {/* Header if Title/Icon provided */}
             {(title || Icon) && (
-                <div className="flex items-center gap-3 mb-4 text-secondary group-hover:text-primary transition-colors">
-                    {Icon && <Icon className="w-5 h-5" />}
-                    {title && <span className="text-xs font-mono uppercase tracking-widest">{title}</span>}
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3 text-secondary group-hover:text-primary transition-colors">
+                        {Icon && <Icon className="w-5 h-5" />}
+                        {title && <span className="text-xs font-mono uppercase tracking-widest">{title}</span>}
+                    </div>
                 </div>
             )}
 

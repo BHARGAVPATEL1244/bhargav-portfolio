@@ -3,7 +3,7 @@
 import { motion, useDragControls } from 'framer-motion';
 import { Minus, X, Maximize2 } from 'lucide-react';
 import { useOSStore, AppId } from './useOSStore';
-import { ReactNode, useRef, useEffect } from 'react';
+import React, { ReactNode, useRef, useEffect } from 'react';
 
 interface WindowFrameProps {
     id: AppId;
@@ -18,9 +18,45 @@ export default function WindowFrame({ id, children, icon }: WindowFrameProps) {
     const closeWindow = useOSStore((state) => state.closeWindow);
     const minimizeWindow = useOSStore((state) => state.minimizeWindow);
     const theme = useOSStore((state) => state.theme);
+    const moveWindow = useOSStore((state) => state.moveWindow);
+    const resizeWindow = useOSStore((state) => state.resizeWindow);
 
     const controls = useDragControls();
-    const constraintsRef = useRef(null);
+
+    // --- Resize Logic ---
+    const [isResizing, setIsResizing] = React.useState(false);
+
+    useEffect(() => {
+        if (!isResizing) return;
+
+        function handlePointerMove(e: PointerEvent) {
+            // Update size based on pointer position relative to window position
+            const newWidth = Math.max(300, e.clientX - windowState.position.x);
+            const newHeight = Math.max(200, e.clientY - windowState.position.y);
+
+            resizeWindow(id, { width: newWidth, height: newHeight });
+        }
+
+        function handlePointerUp() {
+            setIsResizing(false);
+            document.body.style.cursor = 'default';
+        }
+
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+
+        return () => {
+            window.removeEventListener('pointermove', handlePointerMove);
+            window.removeEventListener('pointerup', handlePointerUp);
+        };
+    }, [isResizing, id, resizeWindow, windowState?.position]);
+
+    const onResizeStart = (e: React.PointerEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsResizing(true);
+        document.body.style.cursor = 'nwse-resize';
+    };
 
     if (!windowState.isOpen || windowState.isMinimized) return null;
 
@@ -35,11 +71,17 @@ export default function WindowFrame({ id, children, icon }: WindowFrameProps) {
             dragControls={controls}
             dragListener={false} // Only drag from header
             dragMomentum={false}
+            dragElastic={0}
+            onDragEnd={(_, info) => {
+                const newX = windowState.position.x + info.offset.x;
+                const newY = windowState.position.y + info.offset.y;
+                moveWindow(id, { x: newX, y: newY });
+            }}
             style={{
                 position: 'absolute',
                 width: windowState.size.width,
                 height: windowState.size.height,
-                left: windowState.position.x, // Initial position logic needs work if real resizing, but for now this is fine
+                left: windowState.position.x,
                 top: windowState.position.y,
                 zIndex: windowState.zIndex,
             }}
@@ -49,8 +91,8 @@ export default function WindowFrame({ id, children, icon }: WindowFrameProps) {
                 : theme.windowStyle === 'solid'
                     ? 'border-white bg-black text-white rounded-none border-2'
                     : isActive
-                        ? 'rounded-2xl border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-gray-900/90 backdrop-blur-xl'
-                        : 'rounded-2xl border border-white/5 shadow-xl bg-gray-900/80 backdrop-blur-lg'
+                        ? 'rounded-lg border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.5)] bg-gray-900/90 backdrop-blur-xl'
+                        : 'rounded-lg border border-white/5 shadow-xl bg-gray-900/80 backdrop-blur-lg'
                 }`}
         >
             {/* Header Bar */}
@@ -68,7 +110,6 @@ export default function WindowFrame({ id, children, icon }: WindowFrameProps) {
                     // Retro Header Layout
                     <div className="flex items-center justify-between w-full font-bold tracking-wider text-[11px] font-[MS_Sans_Serif,sans-serif]">
                         <div className="flex items-center gap-2">
-                            {/* Retro Icon simulation if needed, or just text */}
                             <span>{windowState.title}</span>
                         </div>
                         <div className="flex gap-1">
@@ -115,6 +156,14 @@ export default function WindowFrame({ id, children, icon }: WindowFrameProps) {
             {/* Content */}
             <div className="flex-1 w-full overflow-auto relative">
                 {children}
+            </div>
+
+            {/* Resize Handle */}
+            <div
+                className="absolute bottom-0 right-0 w-6 h-6 cursor-nwse-resize z-50 flex items-end justify-end p-1 select-none"
+                onPointerDown={onResizeStart}
+            >
+                <div className="w-2 h-2 border-r-2 border-b-2 border-white/20" />
             </div>
         </motion.div>
     );

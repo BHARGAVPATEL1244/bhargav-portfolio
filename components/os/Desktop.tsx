@@ -11,6 +11,11 @@ import TerminalApp from './apps/TerminalApp';
 import FinderApp from './apps/FinderApp';
 import SettingsApp from './apps/SettingsApp';
 import TrashApp from './apps/TrashApp';
+import MirrorApp from './apps/MirrorApp';
+import WeatherApp from './apps/WeatherApp';
+import NotesApp from './apps/NotesApp';
+import ContextMenu from './ContextMenu';
+import { Camera, CloudRain, FileText } from 'lucide-react';
 
 const BrowserApp = () => (
     <div className="h-full w-full bg-white text-black flex flex-col">
@@ -108,11 +113,26 @@ export default function OSDesktop() {
                         <WindowFrame id="trash" icon={<Trash size={12} />}>
                             <TrashApp />
                         </WindowFrame>
+
+                        <WindowFrame id="mirror" icon={<Camera size={12} />}>
+                            <MirrorApp />
+                        </WindowFrame>
+
+                        <WindowFrame id="weather" icon={<CloudRain size={12} />}>
+                            <WeatherApp />
+                        </WindowFrame>
+
+                        <WindowFrame id="notes" icon={<FileText size={12} />}>
+                            <NotesApp />
+                        </WindowFrame>
                     </div>
                 </div>
 
                 {/* Dock */}
                 <Taskbar />
+
+                {/* Context Menu */}
+                <ContextMenu />
 
                 {/* Close/Exit OS Button (Escape Hatch) */}
                 <button

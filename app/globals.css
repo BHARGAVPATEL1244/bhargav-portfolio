@@ -10,16 +10,53 @@
   --color-secondary: var(--secondary);
 }
 
+/* --- Deep Space (Default) --- */
 :root {
-  --background: #030712;
-  --foreground: #f8fafc;
-  --card: 17 24 39;
+  --background: #030712; /* gray-950 */
+  --foreground: #f8fafc; /* slate-50 */
+  --card: 17 24 39; /* gray-900 */
   --card-foreground: #f8fafc;
-  --border: 148 163 184;
-  --primary: 99 102 241;
-  /* Indigo 500 */
-  --secondary: #64748b;
-  --radius: 0.5rem;
+  --border: 51 65 85; /* slate-700 */
+  --primary: 99 102 241; /* indigo-500 */
+  --secondary: 100 116 139; /* slate-500 */
+  --radius: 0.75rem;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* --- Cyberpunk (Neon & Glitch) --- */
+[data-theme='cyberpunk'] {
+  --background: #050505;
+  --foreground: #ffeeff;
+  --card: 20 20 20;
+  --card-foreground: #ff00ff;
+  --border: 255 0 255;
+  --primary: 255 0 255; /* Magenta */
+  --secondary: 0 255 255; /* Cyan */
+  --radius: 0px;
+}
+
+/* --- Swiss (Clean & Grid) --- */
+[data-theme='swiss'] {
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: 245 245 245;
+  --card-foreground: #111111;
+  --border: 0 0 0;
+  --primary: 215 0 0; /* Swiss Red */
+  --secondary: 100 100 100;
+  --radius: 0px;
+}
+
+/* --- Retro 95 (Windows Classic) --- */
+[data-theme='retro'] {
+  --background: #008080; /* Teal */
+  --foreground: #000000;
+  --card: 192 192 192; /* Silver */
+  --card-foreground: #000000;
+  --border: 128 128 128;
+  --primary: 0 0 128; /* Navy */
+  --secondary: 64 64 64;
+  --radius: 2px;
 }
 
 body {

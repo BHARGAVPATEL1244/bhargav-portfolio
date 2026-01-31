@@ -2,13 +2,16 @@
 
 import { motion } from 'framer-motion';
 import { useOSStore, AppId } from './useOSStore';
-import { Terminal, Copy, Folder, Trash, Settings } from 'lucide-react';
+import { Terminal, Copy, Folder, Trash, Settings, Camera, CloudRain, FileText } from 'lucide-react';
 
 const apps = [
     { id: 'finder', icon: Folder, color: 'text-blue-400', label: 'Finder' },
     { id: 'terminal', icon: Terminal, color: 'text-green-400', label: 'Terminal' },
     { id: 'browser', icon: Copy, color: 'text-indigo-400', label: 'Browser' },
     { id: 'settings', icon: Settings, color: 'text-gray-400', label: 'Settings' },
+    { id: 'mirror', icon: Camera, color: 'text-pink-400', label: 'Mirror' },
+    { id: 'weather', icon: CloudRain, color: 'text-blue-400', label: 'Weather' },
+    { id: 'notes', icon: FileText, color: 'text-yellow-400', label: 'Notes' },
     { id: 'app-separator', icon: null, color: '', label: '' },
     { id: 'trash', icon: Trash, color: 'text-red-400', label: 'Trash' },
 ];

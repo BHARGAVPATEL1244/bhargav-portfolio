@@ -1,30 +1,14 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    return [
-        {
-            url: 'https://bhargav.dev', // Replace with actual domain later
-            lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 1,
-        },
-        {
-            url: 'https://bhargav.dev/about',
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: 'https://bhargav.dev/projects',
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        },
-        {
-            url: 'https://bhargav.dev/contact',
-            lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 0.5,
-        },
-    ];
+    const baseUrl = 'https://bhargavpatel.dev';
+
+    const routes = ['', '/projects', '/about', '/contact'].map(route => ({
+        url: `${baseUrl}${route}`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'weekly' as const,
+        priority: route === '' ? 1 : 0.8,
+    }));
+
+    return [...routes];
 }
